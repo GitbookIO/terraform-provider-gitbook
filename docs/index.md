@@ -23,4 +23,6 @@ provider "gitbook" {
 
 ### Optional
 
-- `endpoint` (String) Example provider attribute
+- `access_token` (String, Sensitive) GitBook Terraform integration access token
+- `base_url` (String) GitBook API base URL (default: `https://api.gitbook.com`)
+- `integration_url` (String) GitBook Terraform integration URL (default: `https://integrations.gitbook.com/v1/integrations/terraform/integration`)
