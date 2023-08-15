@@ -3,27 +3,25 @@ package provider
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 
+	gitbook "github.com/GitbookIO/go-gitbook/api"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-
-	"github.com/GitbookIO/go-gitbook"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 const defaultIntegrationURL = "https://integrations.gitbook.com/v1/integrations/terraform/integration"
 
-// Ensure GitBookProvider satisfies various provider interfaces.
-var _ provider.Provider = &gitBookProvider{}
-
-// gitBookProvider defines the provider implementation.
+// gitBookProvider implements `provider.Provider`.
 type gitBookProvider struct {
-	// version is set to the provider version on release, "dev" when the
+	// Version is set to the provider version on release, "dev" when the
 	// provider is built and ran locally, and "test" when running acceptance
 	// testing.
 	version string
@@ -174,6 +172,7 @@ func (p *gitBookProvider) Configure(ctx context.Context, req provider.ConfigureR
 			"The provided GitBook Terraform integration access token is invalid. "+
 				"Visit the Terraform integration configuration on gitbook.com to obtain an access token.",
 		)
+		return
 	} else if tokenResp.StatusCode != http.StatusOK {
 		resp.Diagnostics.AddError(
 			"Unable to obtain short-lived GitBook API access token",
@@ -202,15 +201,17 @@ func (p *gitBookProvider) Configure(ctx context.Context, req provider.ConfigureR
 	// will fallback to the default `https://api.gitbook.com` in that case.
 	if apiBaseURL != "" {
 		hostVar := clientConfig.Servers[0].Variables["host"]
-		hostVar.EnumValues = []string{apiBaseURL}
+		hostVar.DefaultValue = apiBaseURL
 		clientConfig.Servers[0].Variables["host"] = hostVar
-
 	}
+
 	// Using a custom default header simplifies usage of the client, as we don't
 	// have to explicitly set a `gitbook.ContextAccessToken` context value for
 	// each call.
 	clientConfig.AddDefaultHeader("Authorization", "Bearer "+tokenEnvelope.Token)
 	clientConfig.UserAgent = userAgent
+
+	tflog.Debug(ctx, fmt.Sprintf("%+v", clientConfig))
 
 	client := gitbook.NewAPIClient(clientConfig)
 
@@ -220,12 +221,12 @@ func (p *gitBookProvider) Configure(ctx context.Context, req provider.ConfigureR
 
 func (p *gitBookProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		NewExampleResource,
+		NewSpaceResource,
 	}
 }
 
 func (p *gitBookProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewExampleDataSource,
+		NewSpaceDataSource,
 	}
 }
