@@ -19,6 +19,9 @@ Entity data source
 
 - `entity_id` (String)
 - `properties` (Attributes) (see [below for nested schema](#nestedatt--properties))
+
+### Optional
+
 - `type` (String)
 
 ### Read-Only

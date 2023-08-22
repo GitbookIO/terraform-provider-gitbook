@@ -1,5 +1,3 @@
-github.com/GitbookIO/go-gitbook v0.1.0 h1:tGjZdOAHrKr59xeBNcyMH3/BBCR7zYFWAYAUJ1WHgJo=
-github.com/GitbookIO/go-gitbook v0.1.0/go.mod h1:g2MZWSD81S+DNgQzNFmF/NVw1wpDt8lbF6028C9mkhs=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
 github.com/Masterminds/goutils v1.1.1/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver/v3 v3.1.1 h1:hLg3sBzpNErnxhQtUy/mmLR2I9foDujNK030IGemrRc=
@@ -74,6 +72,8 @@ github.com/hashicorp/terraform-plugin-framework v1.3.3 h1:D18BlA8gdV4+W8WKhUqxud
 github.com/hashicorp/terraform-plugin-framework v1.3.3/go.mod h1:2gGDpWiTI0irr9NSTLFAKlTi6KwGti3AoU19rFqU30o=
 github.com/hashicorp/terraform-plugin-framework-timetypes v0.1.0 h1:N1ktT40oO2w7bsSSSZaZAl0H2HtR7y221voqWO2vEWU=
 github.com/hashicorp/terraform-plugin-framework-timetypes v0.1.0/go.mod h1:775s4WtkiYPaHfAClcr/LDmdR1cVAngIEonvUq9L9/A=
+github.com/hashicorp/terraform-plugin-framework-validators v0.11.0 h1:DKb1bX7/EPZUTW6F5zdwJzS/EZ/ycVD6JAW5RYOj4f8=
+github.com/hashicorp/terraform-plugin-framework-validators v0.11.0/go.mod h1:dzxOiHh7O9CAwc6p8N4mR1H++LtRkl+u+21YNiBVNno=
 github.com/hashicorp/terraform-plugin-go v0.18.0 h1:IwTkOS9cOW1ehLd/rG0y+u/TGLK9y6fGoBjXVUquzpE=
 github.com/hashicorp/terraform-plugin-go v0.18.0/go.mod h1:l7VK+2u5Kf2y+A+742GX0ouLut3gttudmvMgN0PA74Y=
 github.com/hashicorp/terraform-plugin-log v0.9.0 h1:i7hOA+vdAItN1/7UrfBqBwvYPQ9TFvymaRGZED3FCV0=

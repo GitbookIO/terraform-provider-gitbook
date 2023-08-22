@@ -42,7 +42,7 @@ func (m *spaceModel) parseSpace(space *gitbook.Space, diags *diag.Diagnostics) {
 		"published": types.StringPointerValue(space.Urls.Published),
 		"public":    types.StringPointerValue(space.Urls.Public),
 	})
-	if diags.HasError() {
+	if d.HasError() {
 		diags.Append(d...)
 		return
 	}

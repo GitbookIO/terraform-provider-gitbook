@@ -223,6 +223,7 @@ func (p *gitBookProvider) Resources(ctx context.Context) []func() resource.Resou
 	return []func() resource.Resource{
 		NewSpaceResource,
 		NewEntityResource,
+		NewEntitySchemaResource,
 	}
 }
 
@@ -230,5 +231,6 @@ func (p *gitBookProvider) DataSources(ctx context.Context) []func() datasource.D
 	return []func() datasource.DataSource{
 		NewSpaceDataSource,
 		NewEntityDataSource,
+		NewEntitySchemaDataSource,
 	}
 }
