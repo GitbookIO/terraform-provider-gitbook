@@ -18,7 +18,8 @@ Entity resource
 ### Required
 
 - `entity_id` (String)
-- `properties` (Attributes) (see [below for nested schema](#nestedatt--properties))
+- `organization_id` (String)
+- `properties` (Attributes Map) Map of properties, where each key is the property name and the value is an object with either a `string`, `number` or `boolean` property. (see [below for nested schema](#nestedatt--properties))
 - `type` (String)
 
 ### Read-Only
@@ -31,9 +32,9 @@ Entity resource
 
 Optional:
 
-- `boolean_props` (Map of Boolean)
-- `number_props` (Map of Number)
-- `string_props` (Map of String)
+- `boolean` (Boolean)
+- `number` (Number)
+- `string` (String)
 
 
 <a id="nestedatt--urls"></a>

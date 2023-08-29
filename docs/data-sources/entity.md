@@ -18,11 +18,12 @@ Entity data source
 ### Required
 
 - `entity_id` (String)
-- `properties` (Attributes) (see [below for nested schema](#nestedatt--properties))
+- `organization_id` (String)
+- `type` (String)
 
 ### Optional
 
-- `type` (String)
+- `properties` (Attributes Map) (see [below for nested schema](#nestedatt--properties))
 
 ### Read-Only
 
@@ -34,9 +35,9 @@ Entity data source
 
 Optional:
 
-- `boolean_props` (Map of Boolean)
-- `number_props` (Map of Number)
-- `string_props` (Map of String)
+- `boolean` (Boolean)
+- `number` (Number)
+- `string` (String)
 
 
 <a id="nestedatt--urls"></a>

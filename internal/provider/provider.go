@@ -221,7 +221,6 @@ func (p *gitBookProvider) Configure(ctx context.Context, req provider.ConfigureR
 
 func (p *gitBookProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		NewSpaceResource,
 		NewEntityResource,
 		NewEntitySchemaResource,
 	}
@@ -229,7 +228,6 @@ func (p *gitBookProvider) Resources(ctx context.Context) []func() resource.Resou
 
 func (p *gitBookProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewSpaceDataSource,
 		NewEntityDataSource,
 		NewEntitySchemaDataSource,
 	}
