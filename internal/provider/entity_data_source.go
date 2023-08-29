@@ -7,7 +7,6 @@ import (
 	gitbook "github.com/GitbookIO/go-gitbook/api"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 func NewEntityDataSource() datasource.DataSource {
@@ -15,7 +14,9 @@ func NewEntityDataSource() datasource.DataSource {
 }
 
 // entityDataSource defines the data source implementation.
-type entityDataSource struct{}
+type entityDataSource struct {
+	client *gitbook.OrganizationsApiService
+}
 
 func (d *entityDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_entity"
@@ -28,28 +29,30 @@ func (d *entityDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				Required: true,
+				Optional: true,
 			},
 			"type": schema.StringAttribute{
-				Optional: true,
+				Required: true,
+			},
+			"organization_id": schema.StringAttribute{
+				Required: true,
 			},
 			"entity_id": schema.StringAttribute{
 				Required: true,
 			},
-			"properties": schema.SingleNestedAttribute{
-				Required: true,
-				Attributes: map[string]schema.Attribute{
-					"string_props": schema.MapAttribute{
-						Optional:    true,
-						ElementType: types.StringType,
-					},
-					"number_props": schema.MapAttribute{
-						Optional:    true,
-						ElementType: types.NumberType,
-					},
-					"boolean_props": schema.MapAttribute{
-						Optional:    true,
-						ElementType: types.BoolType,
+			"properties": schema.MapNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"string": schema.StringAttribute{
+							Optional: true,
+						},
+						"number": schema.NumberAttribute{
+							Optional: true,
+						},
+						"boolean": schema.BoolAttribute{
+							Optional: true,
+						},
 					},
 				},
 			},
@@ -71,7 +74,7 @@ func (d *entityDataSource) Configure(ctx context.Context, req datasource.Configu
 		return
 	}
 
-	_, ok := req.ProviderData.(*gitbook.APIClient)
+	client, ok := req.ProviderData.(*gitbook.APIClient)
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
@@ -81,32 +84,36 @@ func (d *entityDataSource) Configure(ctx context.Context, req datasource.Configu
 		return
 	}
 
-	// TODO: Set `r.client` with Entities API client once go-gitbook is updated.
+	d.client = client.OrganizationsApi
 }
 
 func (d *entityDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var model entityModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &model)...)
+	// Get current state.
+	state := &entityModel{}
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// entityID := model.ID.ValueString()
+	organizationID := state.OrganizationID.ValueString()
+	entityType := state.Type.ValueString()
+	entityID := state.EntityID.ValueString()
 
-	// entity, _, err := d.client.GetEntityById(ctx, entityID).Execute()
-	// if err != nil {
-	// 	resp.Diagnostics.AddError(
-	// 		"Error reading GitBook entity",
-	// 		fmt.Sprintf("Could not fetch GitBook entity (id: %q): %v", entityID, err),
-	// 	)
-	// 	return
-	// }
+	entity, _, err := d.client.GetEntity(ctx, organizationID, entityType, entityID).Execute()
+	if err != nil {
+		errMessage := parseErrorMessage(err)
+		resp.Diagnostics.AddError(
+			"Error reading GitBook entity",
+			fmt.Sprintf("Could not read GitBook entity: %v", errMessage),
+		)
+		return
+	}
 
-	// state.parseEntity(entity, &resp.Diagnostics)
-	// if resp.Diagnostics.HasError() {
-	// 	return
-	// }
+	state.parseEntity(entity, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
-	// Save data into Terraform state.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	// Save updated state.
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
