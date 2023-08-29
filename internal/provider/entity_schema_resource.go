@@ -197,7 +197,25 @@ func (r *entitySchemaResource) Update(ctx context.Context, req resource.UpdateRe
 }
 
 func (r *entitySchemaResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	// TODO: Implement.
+	var model entitySchemaModel
+
+	// Read Terraform state into the model.
+	resp.Diagnostics.Append(req.State.Get(ctx, &model)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	organizationID := model.Organization.ValueString()
+	entityType := model.Type.ValueString()
+
+	_, err := r.client.DeleteEntitySchema(ctx, organizationID, entityType).Execute()
+	if err != nil {
+		errMessage := parseErrorMessage(err)
+		resp.Diagnostics.AddError(
+			"Error deleting GitBook entity schema",
+			fmt.Sprintf("Could not delete GitBook entity schema: %v", errMessage),
+		)
+	}
 }
 
 func (r *entitySchemaResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
