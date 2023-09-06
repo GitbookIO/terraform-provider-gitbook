@@ -1,14 +1,11 @@
 module github.com/GitbookIO/terraform-provider-gitbook
 
-go 1.19
-
-replace github.com/GitbookIO/go-gitbook => /Users/dstotijn/projects/go-gitbook
+go 1.21
 
 require (
-	github.com/GitbookIO/go-gitbook v0.0.0-00010101000000-000000000000
+	github.com/GitbookIO/go-gitbook v0.2.0
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
 	github.com/hashicorp/terraform-plugin-framework v1.3.3
-	github.com/hashicorp/terraform-plugin-framework-timetypes v0.1.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.11.0
 	github.com/hashicorp/terraform-plugin-go v0.18.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
