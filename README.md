@@ -2,15 +2,15 @@
 
 The [GitBook
 Provider](https://registry.terraform.io/providers/gitbook/gitbook/latest/docs)
-allows [Terraform](https://terraform.io) to manage
-[GitBook](https://gitbook.com) resources.
+allows [Terraform](https://terraform.io) syncing Terraform resources to the
+[GitBook](https://gitbook.com) platform.
 
 ## Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) >= 1.0
 - [Go](https://golang.org/doc/install) >= 1.19
 
-## Building The Provider
+## Installation
 
 1. Clone the repository
 1. Enter the repository directory
@@ -20,29 +20,34 @@ allows [Terraform](https://terraform.io) to manage
 go install
 ```
 
-## Using the provider
+## Usage
 
-TODO
+To get started, read the docs on
+[GitBook](https://docs.gitbook.com/product-tour/integrations/terraform), or
+check out the `gitbook` provider at the [Terraform
+Registry](https://registry.terraform.io/providers/gitbook/gitbook/latest/docs).
 
-## Developing the Provider
+## Development
 
 If you wish to work on the provider, you'll first need
 [Go](http://www.golang.org) installed on your machine (see
 [Requirements](#requirements) above).
 
-To compile the provider, run `go install`. This will build the provider and put
-the provider binary in the `$GOPATH/bin` directory.
+Clone the repository, change to the directory, then run:
+
+```sh
+go install
+```
+
+This will build the provider and put the provider binary in the `$GOPATH/bin`
+directory.
 
 To generate or update documentation, run `go generate`.
 
-In order to run the full suite of Acceptance tests, run `make testacc`.
-
-_Note:_ Acceptance tests create real resources, and often cost money to run.
-
-```shell
-make testacc
-```
-
 ## License
 
-TODO
+Unlicensed
+
+---
+
+© 2023 GitBook, Inc.

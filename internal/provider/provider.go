@@ -57,7 +57,7 @@ func (p *gitBookProvider) Schema(ctx context.Context, req provider.SchemaRequest
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Syncs Terraform resources with GitBook entities. " +
 			"See the [GitBook Terraform integration documentation](https://docs.gitbook.com/product-tour/integrations/terraform) " +
-			"for installation and usage instructions.",
+			"for more detailed installation and usage instructions.",
 		Attributes: map[string]schema.Attribute{
 			"base_url": schema.StringAttribute{
 				MarkdownDescription: "GitBook API base URL (env variable: `GITBOOK_API_BASE_URL`)",

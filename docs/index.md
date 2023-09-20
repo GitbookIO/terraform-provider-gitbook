@@ -3,12 +3,12 @@
 page_title: "gitbook Provider"
 subcategory: ""
 description: |-
-  Syncs Terraform resources with GitBook entities. See the GitBook Terraform integration documentation https://docs.gitbook.com/product-tour/integrations/terraform for installation and usage instructions.
+  Syncs Terraform resources with GitBook entities. See the GitBook Terraform integration documentation https://docs.gitbook.com/product-tour/integrations/terraform for more detailed installation and usage instructions.
 ---
 
 # gitbook Provider
 
-Syncs Terraform resources with GitBook entities. See the [GitBook Terraform integration documentation](https://docs.gitbook.com/product-tour/integrations/terraform) for installation and usage instructions.
+Syncs Terraform resources with GitBook entities. See the [GitBook Terraform integration documentation](https://docs.gitbook.com/product-tour/integrations/terraform) for more detailed installation and usage instructions.
 
 ## Example Usage
 
