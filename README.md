@@ -10,7 +10,14 @@ allows [Terraform](https://terraform.io) syncing Terraform resources to the
 - [Terraform](https://www.terraform.io/downloads.html) >= 1.0
 - [Go](https://golang.org/doc/install) >= 1.19
 
-## Installation
+## Usage
+
+To get started, read the docs on [GitBook](https://docs.gitbook.com/product-tour/integrations/terraform), or check out the `gitbook` provider at
+the [Terraform Registry](https://registry.terraform.io/providers/gitbook/gitbook/latest/docs).
+
+## Development
+
+For local development on the provider, follow these steps:
 
 1. Clone the repository
 1. Enter the repository directory
@@ -20,29 +27,13 @@ allows [Terraform](https://terraform.io) syncing Terraform resources to the
 go install
 ```
 
-## Usage
-
-To get started, read the docs on
-[GitBook](https://docs.gitbook.com/product-tour/integrations/terraform), or
-check out the `gitbook` provider at the [Terraform
-Registry](https://registry.terraform.io/providers/gitbook/gitbook/latest/docs).
-
-## Development
-
-If you wish to work on the provider, you'll first need
-[Go](http://www.golang.org) installed on your machine (see
-[Requirements](#requirements) above).
-
-Clone the repository, change to the directory, then run:
-
-```sh
-go install
-```
-
 This will build the provider and put the provider binary in the `$GOPATH/bin`
 directory.
 
 To generate or update documentation, run `go generate`.
+
+Follow [these docs](https://developer.hashicorp.com/terraform/tutorials/providers-plugin-framework/providers-plugin-framework-provider#prepare-terraform-for-local-provider-install)
+to configure using the locally installed provider.
 
 ## License
 
