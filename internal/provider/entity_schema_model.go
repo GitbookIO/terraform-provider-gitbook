@@ -8,10 +8,10 @@ import (
 )
 
 type entitySchemaModel struct {
-	Type         types.String `tfsdk:"type"`
-	Title        types.Object `tfsdk:"title"`
-	Properties   types.Set    `tfsdk:"properties"`
-	Organization types.String `tfsdk:"organization"`
+	Type           types.String `tfsdk:"type"`
+	Title          types.Object `tfsdk:"title"`
+	Properties     types.Set    `tfsdk:"properties"`
+	OrganizationID types.String `tfsdk:"organization_id"`
 }
 
 type entitySchemaProperties struct {
@@ -43,13 +43,11 @@ var entitySchemaTitleAttributeTypes = map[string]attr.Type{
 }
 
 type entitySchemaPropertyEntity struct {
-	Integration types.String `tfsdk:"integration"`
-	Type        types.String `tfsdk:"type"`
+	Type types.String `tfsdk:"type"`
 }
 
 var entitySchemaEntityPropAttributeTypes = map[string]attr.Type{
-	"integration": types.StringType,
-	"type":        types.StringType,
+	"type": types.StringType,
 }
 
 // parseEntitySchema merges an entity schema from GitBook into a Terraform model.
@@ -76,11 +74,9 @@ func (m *entitySchemaModel) parseEntitySchema(entitySchema *gitbook.EntitySchema
 			"type":        types.StringValue(property.Type),
 		}
 		if property.Entity != nil {
-			entityIntegration, _ := property.Entity["integration"].(string)
 			entityType, _ := property.Entity["type"].(string)
 			entity, d := types.ObjectValue(entitySchemaEntityPropAttributeTypes, map[string]attr.Value{
-				"integration": types.StringValue(entityIntegration),
-				"type":        types.StringValue(entityType),
+				"type": types.StringValue(entityType),
 			})
 			if d.HasError() {
 				diags.Append(d...)

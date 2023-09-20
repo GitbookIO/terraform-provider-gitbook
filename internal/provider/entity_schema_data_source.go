@@ -55,7 +55,7 @@ func (d *entitySchemaDataSource) Schema(ctx context.Context, req datasource.Sche
 							},
 						},
 						"description": schema.StringAttribute{
-							Required: true,
+							Optional: true,
 						},
 						"type": schema.StringAttribute{
 							Required: true,
@@ -65,9 +65,6 @@ func (d *entitySchemaDataSource) Schema(ctx context.Context, req datasource.Sche
 						"entity": schema.SingleNestedAttribute{
 							Optional: true,
 							Attributes: map[string]schema.Attribute{
-								"integration": schema.StringAttribute{
-									Optional: true,
-								},
 								"type": schema.StringAttribute{
 									Required: true,
 								},
@@ -109,7 +106,7 @@ func (d *entitySchemaDataSource) Read(ctx context.Context, req datasource.ReadRe
 		return
 	}
 
-	organizationID := model.Organization.ValueString()
+	organizationID := model.OrganizationID.ValueString()
 	entityType := model.Type.ValueString()
 
 	// Fetch the entity schema via the GitBook API.

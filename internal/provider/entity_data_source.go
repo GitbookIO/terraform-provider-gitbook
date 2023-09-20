@@ -53,6 +53,14 @@ func (d *entityDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 						"boolean": schema.BoolAttribute{
 							Optional: true,
 						},
+						"relation": schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"entity_id": schema.StringAttribute{
+									Required: true,
+								},
+							},
+						},
 					},
 				},
 			},

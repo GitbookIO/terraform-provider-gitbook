@@ -26,13 +26,13 @@ Entity schema data source
 
 Required:
 
-- `description` (String)
 - `name` (String)
 - `title` (Attributes) (see [below for nested schema](#nestedatt--properties--title))
 - `type` (String)
 
 Optional:
 
+- `description` (String)
 - `entity` (Attributes) (see [below for nested schema](#nestedatt--properties--entity))
 
 <a id="nestedatt--properties--title"></a>
@@ -50,7 +50,3 @@ Required:
 Required:
 
 - `type` (String)
-
-Optional:
-
-- `integration` (String)

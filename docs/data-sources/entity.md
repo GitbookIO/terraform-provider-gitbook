@@ -37,7 +37,16 @@ Optional:
 
 - `boolean` (Boolean)
 - `number` (Number)
+- `relation` (Attributes) (see [below for nested schema](#nestedatt--properties--relation))
 - `string` (String)
+
+<a id="nestedatt--properties--relation"></a>
+### Nested Schema for `properties.relation`
+
+Required:
+
+- `entity_id` (String)
+
 
 
 <a id="nestedatt--urls"></a>

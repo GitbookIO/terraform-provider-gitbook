@@ -7,6 +7,7 @@ import (
 	gitbook "github.com/GitbookIO/go-gitbook/api"
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/numbervalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -16,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 func NewEntityResource() resource.Resource {
@@ -63,6 +65,7 @@ func (r *entityResource) Schema(ctx context.Context, req resource.SchemaRequest,
 								stringvalidator.ExactlyOneOf(path.Expressions{
 									path.MatchRelative().AtParent().AtName("number"),
 									path.MatchRelative().AtParent().AtName("boolean"),
+									path.MatchRelative().AtParent().AtName("relation"),
 								}...),
 							},
 						},
@@ -72,6 +75,7 @@ func (r *entityResource) Schema(ctx context.Context, req resource.SchemaRequest,
 								numbervalidator.ExactlyOneOf(path.Expressions{
 									path.MatchRelative().AtParent().AtName("string"),
 									path.MatchRelative().AtParent().AtName("boolean"),
+									path.MatchRelative().AtParent().AtName("relation"),
 								}...),
 							},
 						},
@@ -81,7 +85,23 @@ func (r *entityResource) Schema(ctx context.Context, req resource.SchemaRequest,
 								boolvalidator.ExactlyOneOf(path.Expressions{
 									path.MatchRelative().AtParent().AtName("string"),
 									path.MatchRelative().AtParent().AtName("number"),
+									path.MatchRelative().AtParent().AtName("relation"),
 								}...),
+							},
+						},
+						"relation": schema.SingleNestedAttribute{
+							Optional: true,
+							Validators: []validator.Object{
+								objectvalidator.ExactlyOneOf(path.Expressions{
+									path.MatchRelative().AtParent().AtName("string"),
+									path.MatchRelative().AtParent().AtName("number"),
+									path.MatchRelative().AtParent().AtName("boolean"),
+								}...),
+							},
+							Attributes: map[string]schema.Attribute{
+								"entity_id": schema.StringAttribute{
+									Required: true,
+								},
 							},
 						},
 					},
@@ -309,6 +329,14 @@ func parseUpsertEntityFromModel(ctx context.Context, model entityModel, diags *d
 		if !modelPropValue.Number.IsNull() {
 			valueFloat32, _ := modelPropValue.Number.ValueBigFloat().Float32()
 			propValue.Float32 = &valueFloat32
+		}
+		if !modelPropValue.Relation.IsNull() {
+			relation := entityRelationProperty{}
+			diags.Append(modelPropValue.Relation.As(ctx, &relation, basetypes.ObjectAsOptions{})...)
+			if diags.HasError() {
+				return nil
+			}
+			propValue.UpsertEntityPropertiesValueOneOf = gitbook.NewUpsertEntityPropertiesValueOneOf(relation.EntityID.ValueString())
 		}
 		props[propName] = propValue
 	}

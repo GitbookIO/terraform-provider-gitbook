@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 
@@ -54,17 +55,20 @@ func (p *gitBookProvider) Metadata(ctx context.Context, req provider.MetadataReq
 
 func (p *gitBookProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		MarkdownDescription: "Syncs Terraform resources with GitBook entities. " +
+			"See the [GitBook Terraform integration documentation](https://docs.gitbook.com/product-tour/integrations/terraform) " +
+			"for installation and usage instructions.",
 		Attributes: map[string]schema.Attribute{
 			"base_url": schema.StringAttribute{
-				MarkdownDescription: "GitBook API base URL (default: `https://api.gitbook.com`)",
+				MarkdownDescription: "GitBook API base URL (env variable: `GITBOOK_API_BASE_URL`)",
 				Optional:            true,
 			},
 			"integration_url": schema.StringAttribute{
-				MarkdownDescription: "GitBook Terraform integration URL (default: `" + defaultIntegrationURL + "`)",
+				MarkdownDescription: "GitBook Terraform integration URL (env variable: `GITBOOK_INTEGRATION_URL`)",
 				Optional:            true,
 			},
 			"access_token": schema.StringAttribute{
-				MarkdownDescription: "GitBook Terraform integration access token",
+				MarkdownDescription: "GitBook Terraform integration access token (env variable: `GITBOOK_ACCESS_TOKEN`)",
 				Optional:            true,
 				Sensitive:           true,
 			},
@@ -174,11 +178,12 @@ func (p *gitBookProvider) Configure(ctx context.Context, req provider.ConfigureR
 		)
 		return
 	} else if tokenResp.StatusCode != http.StatusOK {
+		errBody, _ := io.ReadAll(tokenResp.Body)
 		resp.Diagnostics.AddError(
 			"Unable to obtain short-lived GitBook API access token",
 			"An unexpected HTTP response was received when obtaining a short-lived GitBook API access token. "+
 				"If the error is not clear, please contact GitBook support.\n\n"+
-				"GitBook Terraform integration HTTP response status: "+tokenResp.Status,
+				fmt.Sprintf(`Status: %q. Body: %q`, tokenResp.Status, errBody),
 		)
 		return
 	}

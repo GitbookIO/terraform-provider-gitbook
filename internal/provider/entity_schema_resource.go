@@ -3,9 +3,11 @@ package provider
 import (
 	"context"
 	"fmt"
+	"regexp"
 
 	gitbook "github.com/GitbookIO/go-gitbook/api"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -13,6 +15,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
+
+var entitySchemaTypeRegExp = regexp.MustCompile("^terraform:")
 
 func NewEntitySchemaResource() resource.Resource {
 	return &entitySchemaResource{}
@@ -31,11 +35,14 @@ func (r *entitySchemaResource) Schema(ctx context.Context, req resource.SchemaRe
 		MarkdownDescription: "Entity schema resource",
 
 		Attributes: map[string]schema.Attribute{
-			"organization": schema.StringAttribute{
+			"organization_id": schema.StringAttribute{
 				Required: true,
 			},
 			"type": schema.StringAttribute{
 				Required: true,
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(entitySchemaTypeRegExp, "must be prefixed with `terraform:`"),
+				},
 			},
 			"title": schema.SingleNestedAttribute{
 				Required: true,
@@ -59,9 +66,12 @@ func (r *entitySchemaResource) Schema(ctx context.Context, req resource.SchemaRe
 							Required: true,
 						},
 						"description": schema.StringAttribute{
-							Required: true,
+							Optional: true,
 						},
 						"type": schema.StringAttribute{
+							Validators: []validator.String{
+								stringvalidator.OneOf("text", "number", "boolean", "date", "relation"),
+							},
 							Required: true,
 						},
 
@@ -69,9 +79,6 @@ func (r *entitySchemaResource) Schema(ctx context.Context, req resource.SchemaRe
 						"entity": schema.SingleNestedAttribute{
 							Optional: true,
 							Attributes: map[string]schema.Attribute{
-								"integration": schema.StringAttribute{
-									Optional: true,
-								},
 								"type": schema.StringAttribute{
 									Required: true,
 								},
@@ -122,7 +129,7 @@ func (r *entitySchemaResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	// Create entity schema via the GitBook API.
-	_, err := r.client.SetEntitySchema(ctx, model.Organization.ValueString(), model.Type.ValueString()).EntityRawSchema(*entityRawSchema).Execute()
+	_, err := r.client.SetEntitySchema(ctx, model.OrganizationID.ValueString(), model.Type.ValueString()).EntityRawSchema(*entityRawSchema).Execute()
 	if err != nil {
 		errMessage := parseErrorMessage(err)
 		resp.Diagnostics.AddError(
@@ -144,7 +151,7 @@ func (r *entitySchemaResource) Read(ctx context.Context, req resource.ReadReques
 		return
 	}
 
-	organizationID := state.Organization.ValueString()
+	organizationID := state.OrganizationID.ValueString()
 	entityType := state.Type.ValueString()
 
 	// Fetch the entitySchema via the GitBook API.
@@ -182,7 +189,7 @@ func (r *entitySchemaResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	// Update entity schema via the GitBook API.
-	_, err := r.client.SetEntitySchema(ctx, model.Organization.ValueString(), model.Type.ValueString()).EntityRawSchema(*entityRawSchema).Execute()
+	_, err := r.client.SetEntitySchema(ctx, model.OrganizationID.ValueString(), model.Type.ValueString()).EntityRawSchema(*entityRawSchema).Execute()
 	if err != nil {
 		errMessage := parseErrorMessage(err)
 		resp.Diagnostics.AddError(
@@ -205,7 +212,7 @@ func (r *entitySchemaResource) Delete(ctx context.Context, req resource.DeleteRe
 		return
 	}
 
-	organizationID := model.Organization.ValueString()
+	organizationID := model.OrganizationID.ValueString()
 	entityType := model.Type.ValueString()
 
 	_, err := r.client.DeleteEntitySchema(ctx, organizationID, entityType).Execute()
@@ -244,8 +251,7 @@ func entityRawSchemaFromModel(ctx context.Context, model entitySchemaModel, diag
 				return nil
 			}
 			props[i].Entity = map[string]interface{}{
-				"integration": entity.Integration.ValueString(),
-				"type":        entity.Type.ValueString(),
+				"type": entity.Type.ValueString(),
 			}
 		}
 	}
