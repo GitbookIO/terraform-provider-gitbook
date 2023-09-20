@@ -36,14 +36,14 @@ resource "gitbook_entity" "example" {
 
 ### Required
 
-- `entity_id` (String)
-- `organization_id` (String)
+- `entity_id` (String) The ID of the entity, unique for the related entity schema.
+- `organization_id` (String) The ID of the organization that owns the entity.
 - `properties` (Attributes Map) Map of properties, where each key is the property name and the value is an object with either a `string`, `number` or `boolean` property. (see [below for nested schema](#nestedatt--properties))
-- `type` (String)
+- `type` (String) The type of the entity schema. Must be prefixed with `terraform:`.
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) The computed ID of the entity. Not to be confused with the `entity_id` attribute.
 - `urls` (Attributes) (see [below for nested schema](#nestedatt--urls))
 
 <a id="nestedatt--properties"></a>

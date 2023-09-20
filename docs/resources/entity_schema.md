@@ -45,31 +45,31 @@ resource "gitbook_entity_schema" "example_entity_schema" {
 
 ### Required
 
-- `organization_id` (String)
-- `properties` (Attributes Set) (see [below for nested schema](#nestedatt--properties))
-- `title` (Attributes) (see [below for nested schema](#nestedatt--title))
-- `type` (String)
+- `organization_id` (String) The ID of the organization that owns the entity schema.
+- `properties` (Attributes Set) The properties of the entity schema. Each property must have a unique name. At least one property is required. (see [below for nested schema](#nestedatt--properties))
+- `title` (Attributes) The title of the entity schema. (see [below for nested schema](#nestedatt--title))
+- `type` (String) The type of the entity schema. Must be prefixed with `terraform:`.
 
 <a id="nestedatt--properties"></a>
 ### Nested Schema for `properties`
 
 Required:
 
-- `name` (String)
-- `title` (String)
-- `type` (String)
+- `name` (String) The name of the property. Must be unique within the entity schema.
+- `title` (String) The title of the property.
+- `type` (String) The type of the property. Must be one of `text`, `number`, `boolean`, `date`, or `relation`.
 
 Optional:
 
-- `description` (String)
-- `entity` (Attributes) (see [below for nested schema](#nestedatt--properties--entity))
+- `description` (String) The description of the property.
+- `entity` (Attributes) Required when type is `relation`. (see [below for nested schema](#nestedatt--properties--entity))
 
 <a id="nestedatt--properties--entity"></a>
 ### Nested Schema for `properties.entity`
 
 Required:
 
-- `type` (String)
+- `type` (String) The type of the entity schema that can be used for relations.
 
 
 

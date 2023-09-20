@@ -37,22 +37,29 @@ func (r *entityResource) Schema(ctx context.Context, req resource.SchemaRequest,
 		MarkdownDescription: "Entity resource",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				Computed: true,
+				Computed:            true,
+				MarkdownDescription: "The computed ID of the entity. Not to be confused with the `entity_id` attribute.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"organization_id": schema.StringAttribute{
-				Required: true,
+				Required:            true,
+				MarkdownDescription: "The ID of the organization that owns the entity.",
 			},
 			"type": schema.StringAttribute{
-				Required: true,
+				Required:            true,
+				MarkdownDescription: "The type of the entity schema. Must be prefixed with `terraform:`.",
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(entitySchemaTypeRegExp, "must be prefixed with `terraform:`"),
+				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"entity_id": schema.StringAttribute{
-				Required: true,
+				Description: "The ID of the entity, unique for the related entity schema.",
+				Required:    true,
 			},
 			"properties": schema.MapNestedAttribute{
 				Required:            true,

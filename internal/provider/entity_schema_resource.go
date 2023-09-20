@@ -36,16 +36,19 @@ func (r *entitySchemaResource) Schema(ctx context.Context, req resource.SchemaRe
 
 		Attributes: map[string]schema.Attribute{
 			"organization_id": schema.StringAttribute{
-				Required: true,
+				Required:            true,
+				MarkdownDescription: "The ID of the organization that owns the entity schema.",
 			},
 			"type": schema.StringAttribute{
-				Required: true,
+				Required:            true,
+				MarkdownDescription: "The type of the entity schema. Must be prefixed with `terraform:`.",
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(entitySchemaTypeRegExp, "must be prefixed with `terraform:`"),
 				},
 			},
 			"title": schema.SingleNestedAttribute{
-				Required: true,
+				Required:            true,
+				MarkdownDescription: "The title of the entity schema.",
 				Attributes: map[string]schema.Attribute{
 					"singular": schema.StringAttribute{
 						Required: true,
@@ -57,30 +60,36 @@ func (r *entitySchemaResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"properties": schema.SetNestedAttribute{
 				Required: true,
+				MarkdownDescription: "The properties of the entity schema. Each property must have a unique name. " +
+					"At least one property is required.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
-							Required: true,
+							Required:            true,
+							MarkdownDescription: "The name of the property. Must be unique within the entity schema.",
 						},
 						"title": schema.StringAttribute{
-							Required: true,
+							Required:            true,
+							MarkdownDescription: "The title of the property.",
 						},
 						"description": schema.StringAttribute{
-							Optional: true,
+							Optional:            true,
+							MarkdownDescription: "The description of the property.",
 						},
 						"type": schema.StringAttribute{
+							Required:            true,
+							MarkdownDescription: "The type of the property. Must be one of `text`, `number`, `boolean`, `date`, or `relation`.",
 							Validators: []validator.String{
 								stringvalidator.OneOf("text", "number", "boolean", "date", "relation"),
 							},
-							Required: true,
 						},
-
-						// Used when type is `relation`
 						"entity": schema.SingleNestedAttribute{
-							Optional: true,
+							Optional:            true,
+							MarkdownDescription: "Required when type is `relation`.",
 							Attributes: map[string]schema.Attribute{
 								"type": schema.StringAttribute{
-									Required: true,
+									Required:            true,
+									MarkdownDescription: "The type of the entity schema that can be used for relations.",
 								},
 							},
 						},
