@@ -300,6 +300,7 @@ func (r *entityResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	entityType := model.Type.ValueString()
 
 	opts := gitbook.UpsertSchemaEntitiesRequest{
+		Entities: []gitbook.UpsertEntity{},
 		Delete: &gitbook.UpsertSchemaEntitiesRequestDelete{
 			ArrayOfString: &[]string{entityID},
 		},
