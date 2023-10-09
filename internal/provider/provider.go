@@ -18,7 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-const defaultIntegrationURL = "https://integrations.gitbook.com/v1/integrations/terraform/integration"
+const defaultIntegrationURL = "https://integrations.gitbook.com/v1/integrations/terraform/integration/installation-token"
 
 // gitBookProvider implements `provider.Provider`.
 type gitBookProvider struct {
